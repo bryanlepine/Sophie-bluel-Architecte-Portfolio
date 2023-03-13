@@ -29,7 +29,7 @@ loginForm.addEventListener('submit', (event) => {
       localStorage.setItem('token', data.token);
 
       // Redirection vers la page d'accueil
-      window.location.href = 'http://127.0.0.1:5500/FrontEnd/index.html';
+      window.location.href = './index.html';
     } else {
       throw new Error('Erreur lors de la connexion');
     }
