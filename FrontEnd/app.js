@@ -1,6 +1,22 @@
 const token = localStorage.getItem('token');
+function viderToken(){
+  localStorage.removeItem('token');
+  logout.style.display = 'none';
+  login.style.display = 'block';
+  location.reload();
+ }
 
-if (token !== ''){
+if (typeof token === 'string' && token.length > 0){
+  //login logout
+
+  const logout = document.querySelector(".logout");
+  const login = document.querySelector(".login");
+  logout.style.display = 'block';
+  login.style.display = 'none';
+  logout.addEventListener ('click', function (){
+    viderToken();
+  });
+
 const header = document.querySelector('.header-elements')
 const boutonPublication = document.createElement('button');
 const modeEdition = document.createElement('p')
@@ -108,52 +124,154 @@ function ajoutPhotoModal () {
   selectBoutonRetour.style.visibility = 'hidden';
   }
 
-  // Création des éléments de la modal ajout de photo 
-  const modalWrapperAjouter = document.createElement('div');
-  modalWrapperAjouter.classList.add('modal-wrapper-ajouter');
+ // Création des éléments de la modal ajout de photo 
+ const modalWrapperAjouter = document.createElement('div');
+ modalWrapperAjouter.classList.add('modal-wrapper-ajouter');
+ 
+ const titleModalPhoto = document.createElement('h3');
+ titleModalPhoto.innerText = 'Ajout Photo';
+ 
+ const formulaireAjout = document.createElement('form');
+ formulaireAjout.classList.add('formulaire-ajout-photo');
+ 
+ const wrapperAjoutPhoto = document.createElement('div');
+ wrapperAjoutPhoto.classList.add('wrapper-ajout-photo');
+ const IconePhoto = document.createElement('img');
+ IconePhoto.setAttribute('src', './assets/icons/image1.png');
+ IconePhoto.setAttribute('alt', 'icone image');
+ IconePhoto.classList.add('icone-photo');
+ const inputAjoutPhoto = document.createElement('input');
+ inputAjoutPhoto.setAttribute('name', 'photo-input');
+ inputAjoutPhoto.classList.add('inputphoto');
+ inputAjoutPhoto.type = 'file';
+ inputAjoutPhoto.setAttribute('id', 'file');
 
-  const titleModalPhoto = document.createElement('h3');
-  titleModalPhoto.innerText= 'Ajout Photo';
-  const wrapperAjoutPhoto = document.createElement('div');
-  wrapperAjoutPhoto.classList.add('wrapper-ajout-photo');
-  const inputAjoutPhoto = document.createElement('input');
-  inputAjoutPhoto.classList.add('input')
-  const boutonAjoutPhoto = document.createElement('button');
-  boutonAjoutPhoto.classList.add('bouton-ajout-photo');
-  boutonAjoutPhoto.innerText= '+ Ajouter photo';
+ const boutonAjoutPhoto = document.createElement('label');
+ boutonAjoutPhoto.setAttribute('for', 'file');
+ boutonAjoutPhoto.classList.add('bouton-ajout-photo');
+ boutonAjoutPhoto.innerText = '+ Ajouter photo';
+ const specFichier = document.createElement('p');
+ specFichier.innerHTML = 'jpg, png : 4mo max';
+ specFichier.classList.add('spec-fichier');
+ 
+ 
+ const divInputTitle = document.createElement('div');
+ const ajoutPhotoTitle = document.createElement('input');
+ ajoutPhotoTitle.setAttribute('name', 'photo-title');
+ const ajoutPhotoTitleP = document.createElement('p');
+ ajoutPhotoTitleP.innerText = 'Titre';
+ 
+ const divInputCategorie = document.createElement('div');
+ const ajoutPhotoCategorie = document.createElement('select');
+ const optionPrincipaleCat= document.createElement('option');
+ optionPrincipaleCat.value = '';
+optionPrincipaleCat.text = '';
+ajoutPhotoCategorie.add(optionPrincipaleCat); 
+ ajoutPhotoCategorie.classList.add('photo-categorie');
+ ajoutPhotoCategorie.setAttribute('name', 'photo-categorie');
+ const ajoutPhotoCategorieP = document.createElement('p');
+ ajoutPhotoCategorieP.innerText = 'Catégorie';
+ const validerBouton = document.createElement('input');
+ validerBouton.setAttribute('type', 'submit');
+ validerBouton.setAttribute('value', "valider");
+ validerBouton.classList.add('valider-Bouton');
+ 
+ 
+ wrapperAjoutPhoto.appendChild(IconePhoto);
+ wrapperAjoutPhoto.appendChild(inputAjoutPhoto);
+ wrapperAjoutPhoto.appendChild(boutonAjoutPhoto);
+ wrapperAjoutPhoto.appendChild(specFichier);
+ 
+ divInputTitle.appendChild(ajoutPhotoTitleP);
+ divInputTitle.appendChild(ajoutPhotoTitle);
+ 
+ divInputCategorie.appendChild(ajoutPhotoCategorieP);
+ divInputCategorie.appendChild(ajoutPhotoCategorie);
+ 
+ // Ajout des inputs dans le formulaire
+ formulaireAjout.appendChild(wrapperAjoutPhoto);
+ formulaireAjout.appendChild(divInputTitle);
+ formulaireAjout.appendChild(divInputCategorie);
+ formulaireAjout.appendChild(validerBouton);
+ 
+ modalWrapperAjouter.appendChild(titleModalPhoto);
+ modalWrapperAjouter.appendChild(formulaireAjout);
+ ajouterModal.appendChild(modalWrapperAjouter);
 
-  const divInputTitle = document.createElement('div');
-  const ajoutPhotoTitle = document.createElement('input');
-  const ajoutPhotoTitleP = document.createElement('p');
-  ajoutPhotoTitleP.innerText = 'Titre';
+ // remplace les éléments de la modal lorsque l'utilisateur charge une image
+ inputAjoutPhoto.addEventListener('change', function () {
+  const reader = new FileReader();
+  reader.onload = function () {
+    // Cache les éléments de la modale
+    IconePhoto.style.display = "none";
+    boutonAjoutPhoto.style.display = "none";
+    specFichier.style.display = "none";
 
-  const divInputCategorie = document.createElement('div');
-  const ajoutPhotoCategorie = document.createElement('input');
-  const ajoutPhotoCategorieP = document.createElement('p');
-  ajoutPhotoCategorieP.innerText = 'Catégorie';
-  const validerBouton = document.createElement('button');
-  validerBouton.classList.add('valider-Bouton');
-  validerBouton.innerText = 'valider';
+    // Créer une image du résultat
+    const createImage = document.createElement('img');
+    createImage.src = reader.result;
+
+    createImage.onload = function () {
+      const aspectRatio = createImage.width / createImage.height;
+      const imageWidth = 129; 
+      const imageHeight = imageWidth / aspectRatio;
+
+      createImage.width = imageWidth;
+      createImage.height = imageHeight;
+      wrapperAjoutPhoto.appendChild(createImage);
+    };
+    
+  };
+  reader.readAsDataURL(inputAjoutPhoto.files[0]);
+});
+ 
+ fetch('http://localhost:5678/api/categories')
+ .then(response => response.json())
+ .then(categories => {
+
+   // création des boutons par categorie
+   categories.forEach(categorie => {
+     const option = document.createElement('option');
+     option.value = categorie.id;
+     option.text = categorie.name;
+     ajoutPhotoCategorie.appendChild(option);
+   });
+ })
+ .catch(error => {
+   console.log(error, "impossible de récupérer les categories");
+ });
+
+ // envoie du formulaire à l'api
+
+ function envoiForm(){
+  
+  
+  fetch('http://localhost:5678/api/works', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    },
+    body: JSON.stringify(requestData)
+  })
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error('erreur lors du transfert');
+  })
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => {
+    console.error(error);
+  });
+ }
+ validerBouton.addEventListener('click',envoiForm);
+ }
 
 
-wrapperAjoutPhoto.appendChild(boutonAjoutPhoto);
-
-divInputTitle.appendChild(ajoutPhotoTitleP);
-divInputTitle.appendChild(ajoutPhotoTitle);
-
-divInputCategorie.appendChild(ajoutPhotoCategorieP);
-divInputCategorie.appendChild(ajoutPhotoCategorie);
-
-modalWrapperAjouter.appendChild(titleModalPhoto);
-modalWrapperAjouter.appendChild(wrapperAjoutPhoto);
-modalWrapperAjouter.appendChild(divInputTitle);
-
-modalWrapperAjouter.appendChild(divInputCategorie);
-
-modalWrapperAjouter.appendChild(validerBouton);
-ajouterModal.appendChild (modalWrapperAjouter);
-
-}
+ 
 
 
 

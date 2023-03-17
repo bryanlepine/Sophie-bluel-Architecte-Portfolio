@@ -38,4 +38,5 @@ loginForm.addEventListener('submit', (event) => {
     console.error('Erreur lors de la connexion:', error);
     alert(error.message);
   });
+  
 });
