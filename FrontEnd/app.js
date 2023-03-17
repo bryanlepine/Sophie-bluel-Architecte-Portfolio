@@ -131,7 +131,7 @@ function ajoutPhotoModal () {
  const titleModalPhoto = document.createElement('h3');
  titleModalPhoto.innerText = 'Ajout Photo';
  
- const formulaireAjout = document.createElement('form');
+ const formulaireAjout = document.createElement('form'); 
  formulaireAjout.classList.add('formulaire-ajout-photo');
  
  const wrapperAjoutPhoto = document.createElement('div');
@@ -210,7 +210,6 @@ ajoutPhotoCategorie.add(optionPrincipaleCat);
     // Créer une image du résultat
     const createImage = document.createElement('img');
     createImage.src = reader.result;
-
     createImage.onload = function () {
       const aspectRatio = createImage.width / createImage.height;
       const imageWidth = 129; 
@@ -242,9 +241,27 @@ ajoutPhotoCategorie.add(optionPrincipaleCat);
  });
 
  // envoie du formulaire à l'api
-
- function envoiForm(){
-  
+ 
+ validerBouton.addEventListener('click',function (event){
+  event.preventDefault()
+  if (ajoutPhotoTitle.value==''){
+    alert('le titre est obligatoire')
+    return
+  }
+  if (ajoutPhotoCategorie.value==''){
+    alert('la catégorie est obligatoire')
+    return
+  }
+  //if (inputAjoutPhoto.value==''){
+  //  alert('la photo est obligatoire')
+  //  return
+ // }
+  const requete = {
+    imageUrl: inputAjoutPhoto.value,
+    title: ajoutPhotoTitle.value,
+    categorie: ajoutPhotoCategorie.value
+  }
+  console.log(inputAjoutPhoto)
   
   fetch('http://localhost:5678/api/works', {
     method: 'POST',
@@ -252,7 +269,7 @@ ajoutPhotoCategorie.add(optionPrincipaleCat);
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + token
     },
-    body: JSON.stringify(requestData)
+    body: JSON.stringify(requete)
   })
   .then(response => {
     if (response.ok) {
@@ -266,13 +283,30 @@ ajoutPhotoCategorie.add(optionPrincipaleCat);
   .catch(error => {
     console.error(error);
   });
- }
- validerBouton.addEventListener('click',envoiForm);
- }
+  
+ });
+  
+  // fetch('http://localhost:5678/api/works', {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //     'Authorization': 'Bearer ' + token
+  //   },
+  //   body: JSON.stringify(requete)
+  // })
+  // .then(response => {
+  //   if (response.ok) {
+  //     return response.json();
+  //   }
+  //   throw new Error('erreur lors du transfert');
+  // })
+  // .then(data => {
+  //   console.log(data);
+  // })
+  // .catch(error => {
+  //   console.error(error);
+  // });
 
-
- 
-
-
-
+// validerBouton.addEventListener('click',envoiForm);
+}
 
