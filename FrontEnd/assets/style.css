@@ -197,6 +197,22 @@ align-items: center;
 	align-items: center;
 	gap: 50px;
 }
+.bouton-supprimer{
+	cursor: pointer;
+}
+.jconfirm-holder {
+	display: flex;
+	align-items: flex-start;
+  }
+  
+  .jconfirm-box-container {
+	margin-top: 0 !important;
+	top: 0 !important;
+  }
+  
+  .jconfirm-box {
+	margin: 0 auto;
+  }
 
 .bouton-ajout-photo {
 	width: 173px;

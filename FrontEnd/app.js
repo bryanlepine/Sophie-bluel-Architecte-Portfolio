@@ -18,6 +18,7 @@ if (typeof token === 'string' && token.length > 0){
   });
 
 const header = document.querySelector('.header-elements')
+header.style.display='flex';
 const boutonPublication = document.createElement('button');
 const modeEdition = document.createElement('p')
 boutonPublication.innerText = 'publier les changements';
@@ -56,9 +57,11 @@ const galerie = document.querySelector('.gallery2');
                 imgSupprimerElement.src = 'assets/icons/trash-2-16.png';
 
                 // Créer un élément de bouton et ajouter l'image SVG à l'intérieur
-                var boutonSupprimer = document.createElement('button');
+                const boutonSupprimer = document.createElement('button');
+                boutonSupprimer.classList.add('bouton-supprimer');
+                boutonSupprimer.setAttribute('data-id', works.id);
                 boutonSupprimer.appendChild(imgSupprimerElement);
-
+console.log(boutonSupprimer)
                 // Ajouter le bouton au DOM
                 
                 galerie.appendChild(workElement);
@@ -67,6 +70,48 @@ const galerie = document.querySelector('.gallery2');
               workElement.appendChild(boutonSupprimer);
               return workElement
             });
+
+            galerie.addEventListener('click', function (event) {
+              if (event.target.closest('.bouton-supprimer')) {
+                const boutonSupprimer = event.target.closest('.bouton-supprimer');
+                const deleteById = boutonSupprimer.getAttribute('data-id');
+                console.log(deleteById);
+            
+              $.confirm({
+                title: 'Confirmer!',
+                content: 'Vous êtes sûr de vouloir supprimer cette photo?',
+                buttons: {
+                    confirmer: function () {
+                        // Action à effectuer si l'utilisateur confirme
+                        fetch(`http://localhost:5678/api/works/${deleteById}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': 'Bearer ' + token
+                            },
+                            body: deleteById
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                console.log('Element supprimé');
+                            } else {
+                                throw new Error('Erreur lors de la suppression');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log(data);
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                    },
+                    annuler: function () {
+                    },
+                    
+                    
+                }
+            });
+            }});
             
 })};
 
@@ -240,7 +285,7 @@ ajoutPhotoCategorie.add(optionPrincipaleCat);
    console.log(error, "impossible de récupérer les categories");
  });
 
- // envoie du formulaire à l'api
+ // envoie du formulaire à l'api pour l'ajout
  
  validerBouton.addEventListener('click',function (event){
   event.preventDefault()
@@ -252,24 +297,21 @@ ajoutPhotoCategorie.add(optionPrincipaleCat);
     alert('la catégorie est obligatoire')
     return
   }
-  //if (inputAjoutPhoto.value==''){
-  //  alert('la photo est obligatoire')
-  //  return
- // }
-  const requete = {
-    imageUrl: inputAjoutPhoto.value,
-    title: ajoutPhotoTitle.value,
-    categorie: ajoutPhotoCategorie.value
+  if (inputAjoutPhoto.value==''){
+   alert('la photo est obligatoire')
+   return
   }
-  console.log(inputAjoutPhoto)
+  let formData = new FormData();
+  formData.append("image", inputAjoutPhoto.files[0])
+  formData.append("title", ajoutPhotoTitle.value)
+  formData.append("category", ajoutPhotoCategorie.value)
   
   fetch('http://localhost:5678/api/works', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + token
     },
-    body: JSON.stringify(requete)
+    body: formData
   })
   .then(response => {
     if (response.ok) {
@@ -285,28 +327,5 @@ ajoutPhotoCategorie.add(optionPrincipaleCat);
   });
   
  });
-  
-  // fetch('http://localhost:5678/api/works', {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     'Authorization': 'Bearer ' + token
-  //   },
-  //   body: JSON.stringify(requete)
-  // })
-  // .then(response => {
-  //   if (response.ok) {
-  //     return response.json();
-  //   }
-  //   throw new Error('erreur lors du transfert');
-  // })
-  // .then(data => {
-  //   console.log(data);
-  // })
-  // .catch(error => {
-  //   console.error(error);
-  // });
-
-// validerBouton.addEventListener('click',envoiForm);
+ 
 }
-
