@@ -1,6 +1,6 @@
-import { token, galerie } from './common.js';
+// import { token, galerie } from './common.js';
 
-
+const galerie = document.querySelector('.gallery2');
 galerie.addEventListener('click', function (event) {
     if (event.target.closest('.bouton-supprimer')) {
       const boutonSupprimer = event.target.closest('.bouton-supprimer');
@@ -26,10 +26,12 @@ galerie.addEventListener('click', function (event) {
                   } else {
                       throw new Error('Erreur lors de la suppression');
                   }
-                  return response.json();
+                //   return response.json();
               })
               .then(data => {
                   console.log(data);
+                    afficherProjectsModale();
+                    afficherProjects();
               })
               .catch(error => {
                   console.error(error);

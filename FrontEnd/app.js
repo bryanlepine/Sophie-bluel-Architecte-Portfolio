@@ -1,4 +1,4 @@
- const token = localStorage.getItem('token');
+// token = localStorage.getItem('token');
 
  if (typeof token === 'string' && token.length > 0){
 /* header partie haute*/
@@ -28,10 +28,11 @@ const openModal = function(e) {
 };
 
 const galerie = document.querySelector('.gallery2');
-   function afficherProjects() {
+   function afficherProjectsModale() {
         fetch('http://localhost:5678/api/works')
           .then(response => response.json())
           .then(projects => {
+            galerie.innerHTML='';
             projects.forEach(works => {
                 const workElement = document.createElement('figure');
                 const imageElement = document.createElement('img');
@@ -58,19 +59,21 @@ const galerie = document.querySelector('.gallery2');
             
 })};
 
-afficherProjects()
+afficherProjectsModale()
 
 /*fermeture de la modale*/
 
 const closeModal = function(e) {
     if (modal === null) return;
     e.preventDefault();
+    document.querySelector('.retour-bouton').click();
     modal.style.display = 'none';
     modal.setAttribute('aria-hidden', 'true');
     modal.removeAttribute('aria-modal');
     modal.removeEventListener('click', closeModal);
     modal.querySelector('.js-modal-close').removeEventListener('click', closeModal);
     modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation);
+    
     modal = null;
 };
 
@@ -148,6 +151,7 @@ function ajoutPhotoModal () {
  const divInputTitle = document.createElement('div');
  const ajoutPhotoTitle = document.createElement('input');
  ajoutPhotoTitle.setAttribute('name', 'photo-title');
+ ajoutPhotoTitle.classList.add('photo-title');
  const ajoutPhotoTitleP = document.createElement('p');
  ajoutPhotoTitleP.innerText = 'Titre';
  
@@ -233,48 +237,12 @@ ajoutPhotoCategorie.add(optionPrincipaleCat);
    console.log(error, "impossible de récupérer les categories");
  });
 
- // envoie du formulaire à l'api pour l'ajout
+//  // envoie du formulaire à l'api pour l'ajout
  
  validerBouton.addEventListener('click',function (event){
   event.preventDefault()
-  if (ajoutPhotoTitle.value==''){
-    alert('le titre est obligatoire')
-    return
-  }
-  if (ajoutPhotoCategorie.value==''){
-    alert('la catégorie est obligatoire')
-    return
-  }
-  if (inputAjoutPhoto.value==''){
-   alert('la photo est obligatoire')
-   return
-  }
-  let formData = new FormData();
-  formData.append("image", inputAjoutPhoto.files[0])
-  formData.append("title", ajoutPhotoTitle.value)
-  formData.append("category", ajoutPhotoCategorie.value)
-  
-  fetch('http://localhost:5678/api/works', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + token
-    },
-    body: formData
-  })
-  .then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-    throw new Error('erreur lors du transfert');
-  })
-  .then(data => {
-    console.log(data);
-  })
-  .catch(error => {
-    console.error(error);
-  });
-  
- });
- 
-}
+createWork()
+
+});
+ }
  }
