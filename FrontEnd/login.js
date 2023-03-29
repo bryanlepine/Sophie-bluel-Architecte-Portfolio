@@ -40,3 +40,25 @@ loginForm.addEventListener('submit', (event) => {
   });
   
 });
+
+
+/* Login et Logout*/
+
+const token = localStorage.getItem('token');
+function viderToken(){
+  localStorage.removeItem('token');
+  logout.style.display = 'none';
+  login.style.display = 'block';
+  location.reload();
+ }
+
+if (typeof token === 'string' && token.length > 0){
+
+  const logout = document.querySelector(".logout");
+  const login = document.querySelector(".login");
+  logout.style.display = 'block';
+  login.style.display = 'none';
+  logout.addEventListener ('click', function (){
+    viderToken();
+  });
+}

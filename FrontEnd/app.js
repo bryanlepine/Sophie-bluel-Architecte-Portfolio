@@ -1,22 +1,7 @@
-const token = localStorage.getItem('token');
-function viderToken(){
-  localStorage.removeItem('token');
-  logout.style.display = 'none';
-  login.style.display = 'block';
-  location.reload();
- }
+ const token = localStorage.getItem('token');
 
-if (typeof token === 'string' && token.length > 0){
-  //login logout
-
-  const logout = document.querySelector(".logout");
-  const login = document.querySelector(".login");
-  logout.style.display = 'block';
-  login.style.display = 'none';
-  logout.addEventListener ('click', function (){
-    viderToken();
-  });
-
+ if (typeof token === 'string' && token.length > 0){
+/* header partie haute*/
 const header = document.querySelector('.header-elements')
 header.style.display='flex';
 const boutonPublication = document.createElement('button');
@@ -25,7 +10,8 @@ boutonPublication.innerText = 'publier les changements';
 modeEdition.innerText = 'Mode édition';
 header.appendChild(modeEdition);
 header.appendChild(boutonPublication);
-
+ 
+/* affichage modale*/
 const modifierTarget = document.querySelector('.titlewrapper .lienmodal');
 modifierTarget.style.display = 'block'; 
 let modal = null;
@@ -42,7 +28,7 @@ const openModal = function(e) {
 };
 
 const galerie = document.querySelector('.gallery2');
-    function afficherProjects() {
+   function afficherProjects() {
         fetch('http://localhost:5678/api/works')
           .then(response => response.json())
           .then(projects => {
@@ -56,66 +42,25 @@ const galerie = document.querySelector('.gallery2');
                 var imgSupprimerElement = document.createElement('img');
                 imgSupprimerElement.src = 'assets/icons/trash-2-16.png';
 
-                // Créer un élément de bouton et ajouter l'image SVG à l'intérieur
+                // Créer un élément de bouton supprimer et ajouter l'image SVG à l'intérieur
                 const boutonSupprimer = document.createElement('button');
                 boutonSupprimer.classList.add('bouton-supprimer');
                 boutonSupprimer.setAttribute('data-id', works.id);
                 boutonSupprimer.appendChild(imgSupprimerElement);
-console.log(boutonSupprimer)
-                // Ajouter le bouton au DOM
-                
+
+                // Ajout du bouton au DOM  
                 galerie.appendChild(workElement);
               workElement.appendChild(imageElement);
               workElement.appendChild(titleElement);
               workElement.appendChild(boutonSupprimer);
               return workElement
             });
-
-            galerie.addEventListener('click', function (event) {
-              if (event.target.closest('.bouton-supprimer')) {
-                const boutonSupprimer = event.target.closest('.bouton-supprimer');
-                const deleteById = boutonSupprimer.getAttribute('data-id');
-                console.log(deleteById);
-            
-              $.confirm({
-                title: 'Confirmer!',
-                content: 'Vous êtes sûr de vouloir supprimer cette photo?',
-                buttons: {
-                    confirmer: function () {
-                        // Action à effectuer si l'utilisateur confirme
-                        fetch(`http://localhost:5678/api/works/${deleteById}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'Authorization': 'Bearer ' + token
-                            },
-                            body: deleteById
-                        })
-                        .then(response => {
-                            if (response.ok) {
-                                console.log('Element supprimé');
-                            } else {
-                                throw new Error('Erreur lors de la suppression');
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            console.log(data);
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
-                    },
-                    annuler: function () {
-                    },
-                    
-                    
-                }
-            });
-            }});
             
 })};
 
 afficherProjects()
+
+/*fermeture de la modale*/
 
 const closeModal = function(e) {
     if (modal === null) return;
@@ -123,7 +68,7 @@ const closeModal = function(e) {
     modal.style.display = 'none';
     modal.setAttribute('aria-hidden', 'true');
     modal.removeAttribute('aria-modal');
-    modal.removeEventListener('click', closeModal); // Correction de la casse de la méthode removeEventListener
+    modal.removeEventListener('click', closeModal);
     modal.querySelector('.js-modal-close').removeEventListener('click', closeModal);
     modal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation);
     modal = null;
@@ -136,10 +81,10 @@ const stopPropagation = function(e) {
 document.querySelectorAll('.js-modal').forEach(a => {
     a.addEventListener('click', openModal);
 });
-}
 
 
-const h2 = document.querySelector('.modal-wrapper h2');
+
+const h3 = document.querySelector('.modal-wrapper h3');
 const wrapperGalerie= document.querySelector('.wrapper-gallery');
 const boutonsGalerie = document.querySelector('.bouttons')
 
@@ -151,7 +96,7 @@ ajouterPhoto.addEventListener ( 'click', ajoutPhotoModal )
 
 function ajoutPhotoModal () {
   // cacher les éléments
-  h2.style.display= 'none';
+  h3.style.display= 'none';
   wrapperGalerie.style.display= 'none';
   boutonsGalerie.style.display= 'none'; 
 
@@ -163,7 +108,7 @@ function ajoutPhotoModal () {
 
   function retourBoutonFunction () {
     modalWrapperAjouter.style.display = 'none';
-    h2.style.display= 'block';
+    h3.style.display= 'block';
   wrapperGalerie.style.display= 'flex';
   boutonsGalerie.style.display= 'flex';
   selectBoutonRetour.style.visibility = 'hidden';
@@ -216,6 +161,8 @@ ajoutPhotoCategorie.add(optionPrincipaleCat);
  ajoutPhotoCategorie.setAttribute('name', 'photo-categorie');
  const ajoutPhotoCategorieP = document.createElement('p');
  ajoutPhotoCategorieP.innerText = 'Catégorie';
+ 
+ 
  const validerBouton = document.createElement('input');
  validerBouton.setAttribute('type', 'submit');
  validerBouton.setAttribute('value', "valider");
@@ -269,6 +216,7 @@ ajoutPhotoCategorie.add(optionPrincipaleCat);
   reader.readAsDataURL(inputAjoutPhoto.files[0]);
 });
  
+// ajout des catégories dans le selecteur
  fetch('http://localhost:5678/api/categories')
  .then(response => response.json())
  .then(categories => {
@@ -329,3 +277,4 @@ ajoutPhotoCategorie.add(optionPrincipaleCat);
  });
  
 }
+ }

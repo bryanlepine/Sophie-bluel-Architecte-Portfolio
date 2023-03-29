@@ -48,6 +48,7 @@ afficherProjects();
 
 // création du bouton Tous
 const boutonTous = document.createElement('button');
+boutonTous.classList.add('bouton-tous');
 boutonTous.innerHTML = 'Tous';
 filtres.appendChild(boutonTous);
 boutonTous.addEventListener('click', afficherProjects)
@@ -59,6 +60,7 @@ fetch('http://localhost:5678/api/categories')
     // création des boutons par categorie
     categories.forEach(categorie => {
       const boutonCategorie = document.createElement('button');
+      boutonCategorie.classList.add('bouton-categorie');
       boutonCategorie.innerText = categorie.name;
       filtres.appendChild(boutonCategorie);
       boutonCategorie.addEventListener('click', function () {
