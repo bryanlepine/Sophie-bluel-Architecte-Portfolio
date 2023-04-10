@@ -118,8 +118,11 @@ function ajoutPhotoModal () {
   }
 
  // Création des éléments de la modal ajout de photo 
+ modalEnTrop = document.querySelector('.modal-wrapper-ajouter')
+ if(modalEnTrop) modalEnTrop.remove()
  const modalWrapperAjouter = document.createElement('div');
  modalWrapperAjouter.classList.add('modal-wrapper-ajouter');
+
  
  const titleModalPhoto = document.createElement('h3');
  titleModalPhoto.innerText = 'Ajout Photo';

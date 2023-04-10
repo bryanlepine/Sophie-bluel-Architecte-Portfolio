@@ -38,6 +38,7 @@ function createWork(){
     console.log(data);
     document.querySelector('.js-modal-close').click();
     afficherProjects();
+    afficherProjectsModale();
 
   })
   .catch(error => {
